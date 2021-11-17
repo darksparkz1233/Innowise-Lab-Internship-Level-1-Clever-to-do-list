@@ -4,85 +4,18 @@
            v-for="day in days"
            v-bind:key="day"
         >
-          <div id="card" class="day-card unactive" 
-               v-on:click="giveActive()"
-            
-            >
+          <div id="card" @click="setActive(day.id)" class="day-card unactive"> 
               <div class="card-info">
-                <p class="name">{{ day }}</p>
-                <p class="day">{{  }}</p>
+                <p class="name">{{ day.dayOfWeek }}</p>
+                <p class="day">
+                    {{ day.currDate }} 
+                </p>
               </div>
              <div class="dot-wrapper">
                     <div class="dot-status" />
                     <div class="dot-status" />
                 </div>
           </div>
-<!-- 
-            <div id="card" class="day-card unactive">
-                 <div class="card-info">
-                    <p class="name">Tue</p>
-                    <p class="day">2</p>
-                 </div>    
-               <div class="dot-wrapper">
-                    <div class="dot-status" />
-                    <div class="dot-status" />
-                </div>
-            </div>
-
-            <div id="card" class="day-card unactive">
-                 <div class="card-info">
-                    <p class="name">Wed</p>
-                    <p class="day">3</p>
-                 </div>    
-            <div class="dot-wrapper">
-                    <div class="dot-status" />
-                    <div class="dot-status" />
-                </div>
-            </div>
-
-            <div id="card" class="day-card unactive">
-                 <div class="card-info">
-                    <p class="name">Thu</p>
-                    <p class="day">4</p>
-                 </div>          
-               <div class="dot-wrapper">
-                    <div class="dot-status" />
-                    <div class="dot-status" />
-                </div>
-            </div>
-
-            <div id="card" class="day-card unactive">
-                 <div class="card-info">
-                    <p class="name">Fri</p>
-                    <p class="day">5</p>
-                 </div>
-                <div class="dot-wrapper">
-                    <div class="dot-status" />
-                    <div class="dot-status" />
-                </div>
-            </div>
-
-             <div id="card" class="day-card unactive">
-                 <div class="card-info">
-                    <p class="name">Sat</p>
-                    <p class="day">6</p>
-                 </div>
-                 <div class="dot-wrapper">
-                    <div class="dot-status" />
-                    <div class="dot-status" />
-                </div>
-            </div>
-
-             <div id="card" class="day-card unactive">
-                 <div class="card-info">
-                    <p class="name">Sun</p>
-                    <p class="day">7</p>
-                 </div>    
-                 <div class="dot-wrapper">
-                    <div class="dot-status" />
-                    <div class="dot-status" />
-                </div>          
-            </div> -->
 
       </div>
   </div>
@@ -92,15 +25,39 @@
 export default {
     data() {
         return {
-            months: [1,2,3,4,5,6,7,8,9],
-            days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            days: [
+                { dayOfWeek: 'Mon', currDate: 16, id: 1 },
+                { dayOfWeek: 'Tue', currDate: 17, id: 2 },
+                { dayOfWeek: 'Wed', currDate: 18, id: 3 },
+                { dayOfWeek: 'Thu', currDate: 19, id: 4 },
+                { dayOfWeek: 'Fri', currDate: 20, id: 5 },
+                { dayOfWeek: 'Sat', currDate: 21, id: 6 },
+                { dayOfWeek: 'Sun', currDate: 22, id: 7 },                
+            ],
+
+            arr: [1,2,3],
+
+            currDay: new Date().getDate(),
+            currMonth: new Date().getMonth() + 1,
+            currYear: new Date().getFullYear(),
+            daysInMonth: new Date(this.currYear, this.currMonth, 0).getDate(),
+             
+            active: 'active'
         }
     },
     methods: {
-        giveActive: () => {
-            let dayCards = document.querySelectorAll('#card') 
-            Array.from(dayCards)
+        showDate() {
+              let date = new Date();
+              let month = date.getMonth() + 1;
+              let year = date.getFullYear();
+
+              let daysInMonth = new Date(year,month, 0).getDate()
+              Array.from(daysInMonth)
+        },
+        setActive() {
+            alert(this.days.id)
         }
+
     },
   
 
@@ -152,11 +109,13 @@ export default {
         border-radius: 14px;
     }
     .active {
+        transition: 0.3s;
         color: #FFF;
         text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.672);
         background-color: rgb(0, 0, 0);
     }
     .unactive {
+        transition: 0.3s;
         color: #000;
         background-color: #fff;
 

@@ -14,6 +14,10 @@
         <TaskView />
     </div>
 
+    <div class="auth">
+        <!-- <Login /> -->
+    </div>
+
  </div>
 </template>
 
@@ -22,13 +26,15 @@ import Header from './components/Header.vue';
 import Calendar from './components/Calendar.vue';
 import Menu from './components/Menu.vue';
 import TaskView from './components/TaskView.vue';
+// import Login from './components/Login.vue';
 
 export default {
     components: {
         Header,
         Calendar,
         Menu,
-        TaskView
+        TaskView,
+        // Login
     }
 }
 </script>
@@ -36,12 +42,13 @@ export default {
 <style>
 * {
     margin: 0;
-    padding: 0;   
+    padding: 0;  
 }
 
 body {
     background: rgb(255, 255, 255);    
 }
+
 .header-container {
     display: flex;
     justify-content: space-between;
