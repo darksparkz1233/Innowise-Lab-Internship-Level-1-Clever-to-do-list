@@ -4,12 +4,18 @@
         
         <div class="task-counter-wrapper">
             <div class="task-list" 
-                 v-for="task in taskArr"
-                 v-bind:key="task">
+                 v-for="(task, index) in taskArr"
+                 :key="task.id">
 
                 <div class="list-item">
                     <input class="list-checkbox" type="checkbox" name="" id="">
                     {{ task }}
+
+                    <button class="delete-item"
+                            @click="deleteItem(index)"
+                    >
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -29,16 +35,22 @@ export default {
     data() {
         return {
             taskArr: [],
+            // TODO status:
+            isEditing: false,
+            id: 0,
 
-            
         }
     },
     methods: {
         addItem: function () {
             this.taskArr.push('Empty task')
-        }
+        },
+        deleteItem: function(index) {
+            this.taskArr.splice(index, 1)
+        },
     }
 }
+
 </script>
 
 <style scoped> 
@@ -50,7 +62,6 @@ export default {
     margin-left: 2rem;
 }
 .task-counter-wrapper {
-    /* background: rgb(128, 128, 128); */
     overflow-x: scroll;
 
     max-height: 20rem;
