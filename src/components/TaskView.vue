@@ -1,25 +1,45 @@
 <template>
     <div class="task-wrapper">
         <p id="task-counter"> Tasks Today: {{  taskArr.length  }} </p>
-        
-        <div class="task-counter-wrapper">
+        <div class="task-counter-wrapper">                 
+            <!-- ? Render if there are no tasks available: -->
+            <div class="empty-msg"
+                 v-if="taskArr.length == 0"
+            >
+                <p>Start by adding a New Task!</p>
+            </div>
+
             <div class="task-list" 
-                 v-for="(task, index) in taskArr"
-                 :key="task.id">
-
+                 v-for="(task, idx) in taskArr"
+                 :key="idx"
+            >
                 <div class="list-item">
-                    <input class="list-checkbox" type="checkbox" name="" id="">
-                    {{ task }}
+                    <div class="container">
+                        <input class="list-checkbox" type="checkbox">
+                        ({{ idx + 1}}) {{ task.name}}
+                    </div>
 
-                    <button class="delete-item"
-                            @click="deleteItem(index)"
-                    >
-                        Delete
-                    </button>
+                    <div class="item-actions">
+                        <button class="edit-item btn"
+                                v-on:click="showItem()"
+                        >
+                            <img class="icon" src="./Images/editing.png">
+                        </button>
+
+                        <button class="delete-item btn"
+                                v-on:click="deleteItem(idx)"
+                        >
+                            <img class="icon" src="./Images/delete.png">
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <div class="item-card"
+             v-show="isActive">
+            <ItemCard />
+        </div>  
 
         <div class="add-task-wrapper">
             <button id="add-task-btn" v-on:click="addItem()">
@@ -31,25 +51,42 @@
 </template>
 
 <script>
+/* eslint-disable vue/no-unused-components */
+import ItemCard from './ItemCard.vue'
+
 export default {
+    components: {
+        ItemCard
+    },
     data() {
         return {
             taskArr: [],
-            // TODO status:
-            isEditing: false,
-            id: 0,
+            isFinished: false,
+            // ? Display the card:
+            isActive: false,
+
 
         }
     },
     methods: {
-        addItem: function () {
-            this.taskArr.push('Empty task')
+
+        addItem() {
+            this.taskArr.push({
+                name: "Empty task" + Math.random().toString().substring(0, 4),
+                status: this.isFinished
+            })
         },
-        deleteItem: function(index) {
-            this.taskArr.splice(index, 1)
+        deleteItem(idx) {
+            this.taskArr.splice(idx, 1)
         },
+        showItem() {
+            if(this.isActive == false) {
+                this.isActive = true
+            } else { this.isActive = false }
+        }
+        }
     }
-}
+
 
 </script>
 
@@ -57,16 +94,31 @@ export default {
 /* Fonts: */
 @import url('https://fonts.googleapis.com/css2?family=BenchNine:wght@700&family=Open+Sans+Condensed:wght@300&display=swap');
 
+.empty-msg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 95%;
+    height: 15rem;
+
+
+    color: rgba(80, 80, 80, 0.433);
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+}
 .task-wrapper {
     margin-top: 5rem;
     margin-left: 2rem;
 }
 .task-counter-wrapper {
     overflow-x: scroll;
-
     max-height: 20rem;
 }
 .task-list {
+    display: flex;
+
     font-family: 'Open Sans Condensed', sans-serif;
     font-weight: bold;
     font-size: 20px;
@@ -77,20 +129,38 @@ export default {
 
     margin-left: 2rem;
     margin-top: 1rem;
-
-    /* background: #000; */
-
 }
 
 #task-counter {
-    /* position: fixed; */
     font-family: 'BenchNine', sans-serif;
     font-size: 2rem;
 
 }
 
 .list-item {
-    margin-top: 1rem;
+    display: flex;
+    width: 95%;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.item-actions {
+    display: flex;
+
+}
+
+.btn {
+    height: 20px;
+    width: 20px;
+
+    margin-left: 1rem;
+
+    border: none;
+    background: none;
+}
+.icon {
+    height: 25px;
+    cursor: pointer;
 }
 
 .add-task-wrapper {

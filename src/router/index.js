@@ -1,37 +1,51 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import { createRouter, createWebHistory } from 'vue-router'
-import {  getUserState } from '../firebase'
+import {
+  createRouter,
+  createWebHistory
+} from 'vue-router'
+import {
+  getUserState
+} from '../firebase'
 
 
 
 const routes = [
+  // ! Default App route
   {
     path: '/',
     name: 'App',
     component: () => import('../components/Main.vue'),
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true
+    }
   },
-
+  // ! Login page route
   {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),
-    meta: { requiresUnauth: true }
+    meta: {
+      requiresUnauth: true
+    }
   },
-
+  // ! Sign Up page route
   {
     path: '/register',
     name: 'Register',
     component: () => import('../views/Register.vue'),
-    meta: { requiresUnauth: true }
+    meta: {
+      requiresUnauth: true
+    }
   },
-
+  // ! Authorization page route
   {
     path: '/auth',
     name: 'Auth',
     component: () => import('../Auth.vue'),
-    meta: { requiresUnauth: true }
+    meta: {
+      requiresUnauth: true
+    }
   }
 
 ]
@@ -46,8 +60,9 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const requiresUnauth = to.matched.some(record => record.meta.requiresUnauth)
 
-  if(requiresAuth && !isAuth) next('/login')
-  else if(requiresUnauth && isAuth) next('/')
+  // ? Render the pages whether the user's logged in or not:
+  if (requiresAuth && !isAuth) next('/login')
+  else if (requiresUnauth && isAuth) next('/')
   else next()
 })
 

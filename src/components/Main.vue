@@ -22,9 +22,6 @@
     <div class="task-list">
         <TaskView />
     </div>
-
-    
-
  </div>
 </template>
 
@@ -90,9 +87,6 @@ body {
     background: rgb(255, 255, 255);    
 }
 
-.auth {
-
-}
 .header-container {
     display: flex;
     justify-content: space-between;
