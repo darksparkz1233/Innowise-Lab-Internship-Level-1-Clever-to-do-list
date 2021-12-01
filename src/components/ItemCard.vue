@@ -1,19 +1,25 @@
 <template>
-  <div class="card-wrapper"
-       v-if="isActive == true   ">
+  <div 
+       class="card-wrapper"
+       v-if="$store.getters.getCardStatus"
+  >
       <div class="card">
           <span class="menu">
-                <button id="return-btn"
-                        v-on:click="hideItem()">
+                <button
+                        id="return-btn"
+                        @click="$store.commit('toggleCard')"
+                >
                     <img class="arrow icon" src="./Images/left-arrow.png" alt="">
-                </button>
-
+                </button>                  
                 <h1 class="card-header">Today's Task</h1>
           </span>
 
             <div class="task">
                 <input class="task-checkbox" type="checkbox">
-                Empty Task Name
+                <!--     Clicked Task Name:     -->
+                
+                {{ $store.getters.getCardStatus }} 
+                {{ $store.state.clickedCard }}
             </div>
 
             <div class="desc">
@@ -49,21 +55,14 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { hideItem } from './TaskView.vue'
-// import TaskView from './TaskView.vue'
 
 export default {
-    data()  {
-        return {
-            isActive: true
-        }
-    },
-    methods: {
-      hideItem() {
-              if(this.isActive == true) {
-                this.isActive = false
-            } else { this.isActive = false }
-        }
-    }
+data: () => {
+    return {  }
+},
+methods: {  },
+computed: {  },
+
 }
 </script>
 

@@ -1,33 +1,39 @@
 <template>
     <div class="task-wrapper">
-        <p id="task-counter"> Tasks Today: {{  taskArr.length  }} </p>
+        <p id="task-counter">
+            Tasks Today: {{  $store.getters.getTaskArray.length  }}
+        </p>
         <div class="task-counter-wrapper">                 
             <!-- ? Render if there are no tasks available: -->
-            <div class="empty-msg"
-                 v-if="taskArr.length == 0"
+            <div 
+                 class="empty-msg"
+                 v-if="$store.state.taskArr.length == 0"
             >
                 <p>Start by adding a New Task!</p>
             </div>
 
-            <div class="task-list" 
-                 v-for="(task, idx) in taskArr"
+            <div 
+                 class="task-list" 
+                 v-for="(task, idx) in $store.state.taskArr"
                  :key="idx"
             >
                 <div class="list-item">
                     <div class="container">
                         <input class="list-checkbox" type="checkbox">
-                        ({{ idx + 1}}) {{ task.name}}
+                        ({{ idx + 1}}) {{ task }}
                     </div>
 
                     <div class="item-actions">
-                        <button class="edit-item btn"
-                                v-on:click="showItem()"
+                        <button 
+                                class="edit-item btn"
+                                @click="toggleCard(task)"
                         >
                             <img class="icon" src="./Images/editing.png">
                         </button>
 
-                        <button class="delete-item btn"
-                                v-on:click="deleteItem(idx)"
+                        <button 
+                                class="delete-item btn"
+                                @click="$store.commit('deleteItem')"
                         >
                             <img class="icon" src="./Images/delete.png">
                         </button>
@@ -36,13 +42,15 @@
             </div>
         </div>
 
-        <div class="item-card"
-             v-show="isActive">
+        <div class="item-card">
             <ItemCard />
         </div>  
 
         <div class="add-task-wrapper">
-            <button id="add-task-btn" v-on:click="addItem()">
+            <button 
+                    id="add-task-btn"
+                    @click="$store.commit('addItem')"
+            >
                 + Add a new task
             </button>
         </div>
@@ -53,41 +61,21 @@
 <script>
 /* eslint-disable vue/no-unused-components */
 import ItemCard from './ItemCard.vue'
-
+// import { mapActions } from 'vuex'
 export default {
     components: {
         ItemCard
     },
-    data() {
+    setup() {
+        const toggleCard = (item) => {
+            console.log(item)
+            // $store.commit('toggleCard')
+        };
         return {
-            taskArr: [],
-            isFinished: false,
-            // ? Display the card:
-            isActive: false,
-
-
-        }
-    },
-    methods: {
-
-        addItem() {
-            this.taskArr.push({
-                name: "Empty task" + Math.random().toString().substring(0, 4),
-                status: this.isFinished
-            })
-        },
-        deleteItem(idx) {
-            this.taskArr.splice(idx, 1)
-        },
-        showItem() {
-            if(this.isActive == false) {
-                this.isActive = true
-            } else { this.isActive = false }
-        }
+            toggleCard
         }
     }
-
-
+}
 </script>
 
 <style scoped> 

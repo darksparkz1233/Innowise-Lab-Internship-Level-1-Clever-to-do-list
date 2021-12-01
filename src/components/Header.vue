@@ -2,11 +2,6 @@
   <div class="main-wrapper" id="root">
       <div class="title">
           <p>{{ title }}</p>
-          <p class="subtitle">
-              <i>
-                {{ subTitle }}
-              </i>
-            </p>
       </div>
   </div>
 </template>

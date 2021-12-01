@@ -13,11 +13,6 @@
     <div class="task-list">
         <TaskView />
     </div>
-
-    <div class="auth">
-        <!-- <Login /> -->
-    </div>
-
  </div>
 </template>
 
