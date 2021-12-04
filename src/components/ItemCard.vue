@@ -67,6 +67,7 @@ computed: {  },
 </script>
 
 
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=BenchNine:wght@700&family=Open+Sans+Condensed:wght@300&display=swap');
 .card-wrapper {
@@ -145,6 +146,7 @@ computed: {  },
     display: flex;
 
 }
+
 #save {
     display: flex;
     justify-content: center;

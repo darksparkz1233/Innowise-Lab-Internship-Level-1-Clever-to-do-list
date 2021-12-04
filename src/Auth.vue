@@ -4,7 +4,6 @@
             <h1>Clever Task Manager</h1>
         </div>
 
-
         <div id="nav">
             <router-link to="/login">Login</router-link>
             <router-link to="/register">Sign up</router-link>

@@ -26,7 +26,7 @@
                     <div class="item-actions">
                         <button 
                                 class="edit-item btn"
-                                @click="toggleCard(task)"
+                                @click="getClickedTask(task)"
                         >
                             <img class="icon" src="./Images/editing.png">
                         </button>
@@ -61,18 +61,20 @@
 <script>
 /* eslint-disable vue/no-unused-components */
 import ItemCard from './ItemCard.vue'
-// import { mapActions } from 'vuex'
+
 export default {
     components: {
         ItemCard
     },
     setup() {
-        const toggleCard = (item) => {
+        const getClickedTask = (item) => {
             console.log(item)
+            
+
             // $store.commit('toggleCard')
         };
         return {
-            toggleCard
+            getClickedTask
         }
     }
 }
@@ -89,7 +91,6 @@ export default {
 
     width: 95%;
     height: 15rem;
-
 
     color: rgba(80, 80, 80, 0.433);
     font-family: 'Open Sans Condensed', sans-serif;
@@ -122,7 +123,6 @@ export default {
 #task-counter {
     font-family: 'BenchNine', sans-serif;
     font-size: 2rem;
-
 }
 
 .list-item {

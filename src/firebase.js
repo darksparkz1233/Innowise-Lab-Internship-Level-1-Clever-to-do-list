@@ -1,3 +1,6 @@
+//
+// ───  ANCHOR IMPORTS ────────────────────────────────────────────────────────────────────
+//
 import {
     initializeApp
 } from "@firebase/app";
@@ -11,8 +14,13 @@ import {
     onUnmounted,
     computed
 } from "vue"
+// ────────────────────────────────────────────────────────────────────────────────
 
 
+
+//
+// ───  ANCHOR FIREBASE CONFIG ────────────────────────────────────────────────────────────
+//
 export const firebaseConfig = initializeApp({
     apiKey: "AIzaSyBHrVos3hd-j8GjKoTY6_oh-fPKO0XNs6U",
     authDomain: "clever-todo-754fc.firebaseapp.com",
@@ -22,8 +30,12 @@ export const firebaseConfig = initializeApp({
     appId: "1:233676974664:web:a7288f32ed7b75b2e3467d",
     measurementId: "G-JXWB1METB0"
 })
+// ────────────────────────────────────────────────────────────────────────────────
 
 
+//
+// ─── ANCHOR FIREBASE AUTH ──────────────────────────────────────────────────────────────
+//
 export const useAuthState = () => {
     const user = ref(null)
     const error = ref(null)
@@ -52,3 +64,4 @@ export const getUserState = () =>
     new Promise((resolve, reject) =>
         onAuthStateChanged(getAuth(), resolve, reject)
     )
+// ────────────────────────────────────────────────────────────────────────────────
