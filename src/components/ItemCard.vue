@@ -1,14 +1,15 @@
 <template>
   <div 
-       class="card-wrapper"
-       v-if="$store.getters.getCardStatus"
+    class="card-wrapper"
+    v-if="$store.getters.getCardStatus"
   >
       <div class="card">
           <span class="menu">
                 <button
-                        id="return-btn"
-                        @click="$store.commit('toggleCard')"
+                    id="return-btn"
+                    @click="goBack()"
                 >
+    
                     <img class="arrow icon" src="./Images/left-arrow.png" alt="">
                 </button>                  
                 <h1 class="card-header">Today's Task</h1>
@@ -17,26 +18,38 @@
             <div class="task">
                 <input class="task-checkbox" type="checkbox">
                 <!--     Clicked Task Name:     -->
+                <input
+                    v-model="$store.state.clickedTask.name"
+                    type="text"
+                >  
                 
-                {{ $store.getters.getCardStatus }} 
-                {{ $store.state.clickedCard }}
+                
             </div>
 
-            <div class="desc">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio dignissimos laudantium debitis nam quas tenetur non accusamus voluptatum quae ipsam ipsa maiores excepturi quasi, itaque quibusdam, corporis fugit? Laborum, deserunt.
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid placeat odio totam error nisi soluta quia alias, earum fugiat obcaecati reiciendis, dolorum impedit possimus? Voluptatibus, beatae omnis quisquam praesentium quia sequi culpa dignissimos aspernatur optio dolores tempora fuga expedita eligendi!
+            <div>  
+                <input
+                    class="desc-area"
+                    type="text"
+                    v-model="$store.state.clickedTask.description" /> 
+                
             </div>
 
             <div class="bottom-menu">
                 <div class="actions">
                     <div class="menu-wrapper">
-                        <div id="edit">
+                        <button
+                            @click="editItem()"
+                            id="edit"
+                        >
                             <img class="icon" src="./Images/editing.png" alt="">
-                        </div>
+                        </button>
 
-                        <div id="delete">
+                        <button
+                            id="delete"
+                            @click="deleteTask()"
+                        >
                             <img class="icon" src="./Images/delete.png" alt="">
-                        </div>
+                        </button>
                     </div>
 
                     <div class="save-wrapper">
@@ -54,19 +67,34 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import { hideItem } from './TaskView.vue'
+import { useStore } from 'vuex'
 
 export default {
-data: () => {
-    return {  }
-},
-methods: {  },
-computed: {  },
+    setup() {
+        const store = useStore()
+
+        const goBack = () => {
+            store.state.clickedTask = null
+
+            store.state.cardStatus ?
+                store.state.cardStatus = false 
+                :
+                store.state.cardStatus = true
+        }
+        
+        const deleteTask = () => {
+            
+        }
+
+        return {
+            goBack
+        }
+    }
+
 
 }
+
 </script>
-
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=BenchNine:wght@700&family=Open+Sans+Condensed:wght@300&display=swap');
@@ -81,9 +109,9 @@ computed: {  },
 
     background: #fff;
 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.303);
     border-top-right-radius: 30px;
     border-top-left-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.303);
 
 
     z-index: 2;
@@ -100,10 +128,18 @@ computed: {  },
     font-size: 25px;
     margin-top: 3.5rem;
 }
-.desc {
+.desc-area {
+    background: rgba(128, 128, 128, 0.186);
+    color: gray;
+    border-radius: 7px;
+
+    font-size: 20px;
+
+    width: auto;
+    min-height: 330px;
+
     margin-top: 1.5rem;
     margin-left: 1rem;
-    color: gray;
 }
 .menu {
     display: flex;

@@ -8,17 +8,16 @@ export default createStore({
   state: () => {
     return {
       cardStatus: false,
-      clickedCard: null,
+
+      clickedTask: null,
 
       cardVisible: true,
-      taskArr: [
-        'Walk', 'Survive'
-      ]
+      taskArr: [ ]
     }
   },
   // ────────────────────────────────────────────────────────────────────────────────
 
-// ANCHOR asdsdadddddddddd
+
   //
   // ─── GETTERS ────────────────────────────────────────────────────────────────────
   //
@@ -39,22 +38,23 @@ export default createStore({
   //
   mutations: {
     toggleCard(state) {
-      if(!state.cardStatus) {
+      state.cardStatus ?
+        state.cardStatus = false 
+        :
         state.cardStatus = true
-      }
-      else if(state.cardStatus) {
-        state.cardStatus = false
-      }
     },
 
     addItem(state) {
-      state.taskArr.push('Empty Task')
-    },
-  
-    deleteItem(state, idx) {
-      state.taskArr.splice(idx, 1)
-    },
+      state.taskArr.push(
+        { 
+          name: 'Empty Task' + Math.random().toString().substring(0, 4), 
+          description: 'No description...' 
+        } 
+    
+      
+      )
 
+    },
   },
   // ────────────────────────────────────────────────────────────────────────────────
 

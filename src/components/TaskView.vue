@@ -1,39 +1,39 @@
 <template>
     <div class="task-wrapper">
         <p id="task-counter">
-            Tasks Today: {{  $store.getters.getTaskArray.length  }}
+            Tasks Today: {{ taskArr.length }}
         </p>
         <div class="task-counter-wrapper">                 
             <!-- ? Render if there are no tasks available: -->
             <div 
-                 class="empty-msg"
-                 v-if="$store.state.taskArr.length == 0"
+                class="empty-msg"
+                v-if="taskArr.length == 0"
             >
                 <p>Start by adding a New Task!</p>
             </div>
 
             <div 
-                 class="task-list" 
-                 v-for="(task, idx) in $store.state.taskArr"
-                 :key="idx"
+                class="task-list" 
+                v-for="(task, idx) in taskArr"
+                :key="idx"
             >
                 <div class="list-item">
                     <div class="container">
                         <input class="list-checkbox" type="checkbox">
-                        ({{ idx + 1}}) {{ task }}
+                        ({{ idx + 1}}) {{ task.name }}
                     </div>
 
                     <div class="item-actions">
                         <button 
-                                class="edit-item btn"
-                                @click="getClickedTask(task)"
-                        >
+                            class="edit-item btn"
+                            @click="getClickedTask(task)"
+                        > 
                             <img class="icon" src="./Images/editing.png">
                         </button>
 
                         <button 
-                                class="delete-item btn"
-                                @click="$store.commit('deleteItem')"
+                            class="delete-item btn"
+                            @click="deleteItem(idx)"
                         >
                             <img class="icon" src="./Images/delete.png">
                         </button>
@@ -48,8 +48,8 @@
 
         <div class="add-task-wrapper">
             <button 
-                    id="add-task-btn"
-                    @click="$store.commit('addItem')"
+                id="add-task-btn"
+                @click="addItem()"
             >
                 + Add a new task
             </button>
@@ -61,22 +61,48 @@
 <script>
 /* eslint-disable vue/no-unused-components */
 import ItemCard from './ItemCard.vue'
+import { useStore } from 'vuex'
+// import { computed } from '@vue/reactivity'
 
 export default {
     components: {
         ItemCard
     },
-    setup() {
-        const getClickedTask = (item) => {
-            console.log(item)
-            
 
-            // $store.commit('toggleCard')
+    setup() {
+        const store = useStore()
+        const taskArr = store.state.taskArr
+    
+    
+        const getClickedTask = (item) => {
+            store.state.clickedTask = item
+            
+            store.state.cardStatus ?
+                store.state.cardStatus = false 
+                :
+                store.state.cardStatus = true
+    
+            console.log(store.state)  
         };
-        return {
-            getClickedTask
+
+        // ! Delete Item:
+        const deleteItem = (idx) => {
+            store.state.taskArr.splice(idx, 1)
         }
-    }
+
+
+
+        return {
+            addItem: () => store.commit('addItem'),
+
+            getClickedTask,
+            deleteItem,
+            taskArr,
+        
+        }
+            
+    },
+
 }
 </script>
 
