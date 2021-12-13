@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 
 export default createStore({
   //
@@ -10,69 +10,48 @@ export default createStore({
       cardStatus: false,
 
       clickedTask: null,
+      taskStatus: null,
+
+      dayIsActive: "active",
 
       cardVisible: true,
-      taskArr: [ ]
-    }
+      taskArr: [],
+    };
   },
   // ────────────────────────────────────────────────────────────────────────────────
-
 
   //
   // ─── GETTERS ────────────────────────────────────────────────────────────────────
   //
   getters: {
-   getCardStatus(state) {
-     return state.cardStatus
-   },
-   getTaskArray(state) {
-     return state.taskArr
-   },
-   
+    getCardStatus(state) {
+      return state.cardStatus;
+    },
+    getTaskArray(state) {
+      return state.taskArr;
+    },
   },
   // ────────────────────────────────────────────────────────────────────────────────
-
 
   //
   // ─── MUTATIONS ──────────────────────────────────────────────────────────────────
   //
   mutations: {
     toggleCard(state) {
-      state.cardStatus ?
-        state.cardStatus = false 
-        :
-        state.cardStatus = true
-    },
-
-    addItem(state) {
-      state.taskArr.push(
-        { 
-          name: 'Empty Task' + Math.random().toString().substring(0, 4), 
-          description: 'No description...' 
-        } 
-    
-      
-      )
-
+      state.cardStatus ? (state.cardStatus = false) : (state.cardStatus = true);
     },
   },
   // ────────────────────────────────────────────────────────────────────────────────
 
+  //
+  // ─── ACTIONS ────────────────────────────────────────────────────────────────────
+  //
+  actions: {},
+  // ────────────────────────────────────────────────────────────────────────────────
 
-//
-// ─── ACTIONS ────────────────────────────────────────────────────────────────────
-//
-  actions: {
-
-},
+  //
+  // ─── MODULES ────────────────────────────────────────────────────────────────────
+  //
+  modules: {},
+});
 // ────────────────────────────────────────────────────────────────────────────────
-
-//
-// ─── MODULES ────────────────────────────────────────────────────────────────────
-//
-  modules: {
-    
-  }
-})
-// ────────────────────────────────────────────────────────────────────────────────
-

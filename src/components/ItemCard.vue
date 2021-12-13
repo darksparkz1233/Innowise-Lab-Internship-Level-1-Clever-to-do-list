@@ -15,30 +15,47 @@
                 <h1 class="card-header">Today's Task</h1>
           </span>
 
-            <div class="task">
-                <input class="task-checkbox" type="checkbox">
-                <!--     Clicked Task Name:     -->
+            <div class="task-wrapper">
+                <!--     Task Name Edit     -->
                 <input
+                    v-if="isEditing"
                     v-model="$store.state.clickedTask.name"
+                    class="task-name-edit"
                     type="text"
-                >  
-                
+                > 
+            <!-- ! Task Name Default -->
+                <div 
+                    v-else
+                    class="task-name-default"
+                >
+                    {{ $store.state.clickedTask.name }}
+                </div>
                 
             </div>
 
-            <div>  
+            <!-- ! Task Description Edit -->
+            <div class="desc-wrapper">  
                 <input
-                    class="desc-area"
+                    v-if="isEditing"
+                    v-model="$store.state.clickedTask.description"
+                    class="desc-area-edit"
                     type="text"
-                    v-model="$store.state.clickedTask.description" /> 
-                
+                    
+                />
+            <!-- ! Task Description Default -->
+                <div 
+                    v-else
+                    class="desc-area-default" 
+                >
+                    {{ $store.state.clickedTask.description }}
+                </div>
             </div>
 
             <div class="bottom-menu">
                 <div class="actions">
                     <div class="menu-wrapper">
                         <button
-                            @click="editItem()"
+                            @click="editMode()"
                             id="edit"
                         >
                             <img class="icon" src="./Images/editing.png" alt="">
@@ -54,7 +71,10 @@
 
                     <div class="save-wrapper">
                         <div id="save">
-                            <button id="save-btn">
+                            <button
+                                @click="saveChanges()"
+                                id="save-btn"
+                            >
                                 Save changes!
                             </button>
                         </div>
@@ -68,11 +88,14 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { useStore } from 'vuex'
+import { computed, ref } from 'vue'
 
 export default {
     setup() {
         const store = useStore()
 
+        let isEditing = ref(false)
+    
         const goBack = () => {
             store.state.clickedTask = null
 
@@ -80,17 +103,29 @@ export default {
                 store.state.cardStatus = false 
                 :
                 store.state.cardStatus = true
+            
+            isEditing.value = false
         }
         
-        const deleteTask = () => {
-            
+        const editMode = () => {
+            if(!isEditing.value) {
+                isEditing.value = true
+            }
+        }
+
+        const saveChanges = () => {
+            if(isEditing.value) {
+                isEditing.value = false
+            }
         }
 
         return {
-            goBack
+            saveChanges,
+            goBack,
+            editMode,
+            isEditing
         }
-    }
-
+    },
 
 }
 
@@ -98,6 +133,10 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=BenchNine:wght@700&family=Open+Sans+Condensed:wght@300&display=swap');
+
+/*=============================================
+=            Card Styles            =
+=============================================*/
 .card-wrapper {
     position: absolute;
 
@@ -111,36 +150,26 @@ export default {
 
     border-top-right-radius: 30px;
     border-top-left-radius: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.303);
 
+    box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.124);
 
     z-index: 2;
 }
+
 .card {
     position: relative;
     margin: 20px;
     margin: 2rem;
 
     font-family: 'Open Sans Condensed', sans-serif;
-
 }
-.task {
-    font-size: 25px;
-    margin-top: 3.5rem;
-}
-.desc-area {
-    background: rgba(128, 128, 128, 0.186);
-    color: gray;
-    border-radius: 7px;
+/*=====  End of Card Styles  ======*/
 
-    font-size: 20px;
 
-    width: auto;
-    min-height: 330px;
 
-    margin-top: 1.5rem;
-    margin-left: 1rem;
-}
+/*=============================================
+=            Top Menu            =
+=============================================*/
 .menu {
     display: flex;
     align-items: center;
@@ -162,14 +191,89 @@ export default {
 .icon {
     height: 22px;
     cursor: pointer;
-} .arrow {
+}
+
+.arrow {
     height: 15px;
 }
+/*=====  End of Top Menu  ======*/
+
+
+/*=============================================
+=            Task Content            =
+=============================================*/
+.task-wrapper {
+    display: flex;
+    flex-direction: row;
+        
+    margin-top: 2rem;
+}
+/* ! Edit Mode for Task Name */
+.task-name-edit {
+    background: rgba(128, 128, 128, 0.186);
+    
+    border: none;
+    border-radius: 7px;
+
+    padding: 2px;
+
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 23px;
+}
+/* ! Default styles for Task Name */
+.task-name-default {
+    font-size: 23px;
+}
+
+/* Edit Mode for Description  */
+.desc-area-edit {
+    background: rgba(128, 128, 128, 0.186);
+    color: gray;
+
+    border-radius: 7px;
+    border: none;
+
+    font-size: 20px;
+    text-align: center;
+
+    width: 95%;
+    min-height: 320px;
+
+    margin-top: 1.5rem;
+    margin-left: 1rem;
+
+    padding: 10px 0 0 15px;
+}
+
+/* Default styles for Description */
+.desc-area-default {
+    background: rgba(128, 128, 128, 0.186);
+    color: gray;
+
+    border-radius: 7px;
+    border: none;
+
+    font-size: 20px;
+    text-align: left;
+
+    width: auto;
+    min-height: 320px;
+
+    margin-top: 1.5rem;
+    margin-left: 1rem;
+
+    padding: 10px 0 0 15px;
+}
+/*=====  End of Task Content  ======*/
+
+
+/*=============================================
+=            Bottom Menu Actions            =
+=============================================*/
 .actions {    
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
 
     margin-top: 2.5rem;
 }
@@ -183,14 +287,23 @@ export default {
 
 }
 
+.save-wrapper {
+    display: flex;
+}
+
 #save {
     display: flex;
     justify-content: center;
-} #save-btn {
+}
+
+#save-btn {
     font-family: 'Open Sans Condensed', sans-serif;
     font-size: 17px;
     font-weight: bold;
 
+    cursor: pointer;
+
+    border: none;
     background: rgba(16, 175, 16, 0.301);
     color: rgb(47, 128, 44);
 
@@ -198,10 +311,10 @@ export default {
 
     width: 6rem;
     padding: 5px;
-    border: none;
+    
 }
-.save-wrapper {
-    display: flex;
-}
+/*=====  End of Bottom Menu Actions  ======*/
+
+
 
 </style>
