@@ -6,7 +6,7 @@ import {
 } from 'vue-router'
 import {
   getUserState
-} from '../firebase'
+} from '../firebase'  
 
 
 

@@ -14,6 +14,8 @@ export default createStore({
 
       dayIsActive: "active",
 
+      dotStatusTransfer: false,
+
       cardVisible: true,
       taskArr: [],
     };

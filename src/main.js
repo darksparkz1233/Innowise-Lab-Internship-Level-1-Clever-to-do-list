@@ -6,6 +6,9 @@ import router from './router'
 import Start from './components/Start.vue'
 import store from './store'
 
-createApp(Start).use(store).use(router).mount('#app')
 
 
+createApp(Start)
+    .use(store)
+        .use(router)
+            .mount('#app')

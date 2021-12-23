@@ -1,7 +1,4 @@
 <template>
-  <div>Active card: {{ currDay }}</div>
-  <hr />
-  <div>Current Task is: {{ currDay.dayOfWeek }}</div>
   <div class="task-wrapper">
     <p id="task-counter">Tasks Today: {{ currDay.tasks.length }}</p>
     <div class="task-counter-wrapper">
@@ -12,13 +9,18 @@
 
       <div class="task-list" v-for="(task, idx) in currDay.tasks" :key="idx">
         <div class="list-item">
-          <div class="container">
-            <input class="list-checkbox" type="checkbox" />
-              {{ task.name }}
+          <div class="container" :class="{ done: task.status }">
+            <input
+              @change="changeDotStatus(task)"
+              v-model="task.status"
+              class="list-checkbox"
+              type="checkbox"
+            />
+            {{ task.name }}
           </div>
 
           <div class="item-actions">
-            <button class="edit-item btn" @click="getClickedTask(task)">
+            <button class="edit-item btn" @click="popupWindow(task)">
               <img class="icon" src="./Images/editing.png" />
             </button>
 
@@ -30,10 +32,11 @@
       </div>
     </div>
 
+    {{ storeDotStatus }}
+
     <div class="item-card">
       <ItemCard />
     </div>
-
     <div class="add-task-wrapper">
       <button id="add-task-btn" @click="addItem()">+ Add a new task</button>
     </div>
@@ -45,14 +48,28 @@
 /* eslint-disable vue/no-unused-components */
 import ItemCard from "./ItemCard.vue";
 import { useStore } from "vuex";
-import { onMounted, ref, emit } from "vue";
-// import { computed } from '@vue/reactivity'
+import { onMounted, ref, emit, computed, onUnmounted } from "vue";
+
+import { 
+  getFirestore, 
+  orderBy,
+  collection,
+  doc,
+  addDoc, 
+  setDoc,
+  deleteDoc,
+  updateDoc, 
+  getDoc,
+  onSnapshot,
+  DocumentSnapshot,
+  getDocs,
+  
+} from 'firebase/firestore'
 
 export default {
   components: {
     ItemCard,
   },
-
   props: {
     dayArr: {
       type: Array,
@@ -62,49 +79,129 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    displayDotStatus: {
+      type: Boolean,
+      default: () => true,
+    },
   },
+
   setup(props) {
+    // ? Firebase store: 
+    const firestore = getFirestore()
+    const calendar = doc(firestore, 'calendar/days')
+    // ? Vuex store:
     const store = useStore();
-
     const dayArrData = ref(props.dayArr);
-    const currDay = ref(props.currDay);
 
-    const getClickedTask = (item) => {
+    const currTasks = dayArrData.value.find ((el) => {
+      return el.id === props.currDay.id;
+    });
+
+    const currDay = ref(props.currDay)
+
+    const dotStatus = ref(props.displayDotStatus);
+    
+    // TODO: Make a status for the checked checkbox
+    const isActiveDot = ref(props.dotStatus);
+    //  For this is the new keyboard as this is hte new 
+    // TODO: Create a pop-up window when the task is clicked:
+    const popupWindow = (item) => {
       store.state.clickedTask = item;
-
       store.state.cardStatus
         ? (store.state.cardStatus = false)
         : (store.state.cardStatus = true);
     };
-    // ! Delete Item:
+    // TODO: Delete task function:
     const deleteItem = (idx) => {
-      currDay.value.tasks.splice(idx, 1);
+      currTasks.tasks.splice(idx, 1);
+      deleteDoc(calendar, currTasks)
     };
-
-    const currTasks = dayArrData.value.find((el) => {
-      return el == props.currDay.id
-    })
-
-  
-    const addItem = () => {
-      currTasks.tasks.push({
-        name: "Empty Task" + Math.random().toString().substring(0, 4),
-        description: "No description...",
-      });
- 
-    };
-
-
     console.log(currDay.value);
-    onMounted(() => {});
-    
 
+    const taskCollection = collection(firestore, 'tasks')
+
+    function listenToADocument() {
+      onSnapshot(calendar, docSnapshot => {
+        if(docSnapshot.exists()) {
+          const docData = docSnapshot.data()
+          console.log(`In realtime, docData : ${ JSON.stringify(docData) }`)
+        }
+      })
+    } 
+
+    listenToADocument()
+    
+    const tasks = ref(currTasks)
+
+    // TODO: Get tasks:
+    const getTasks = 
+      onSnapshot(taskCollection, snapshot => {
+        console.log(snapshot.docs);
+        tasks.value = snapshot.docs
+      })
+
+    // TODO: Add item function:
+    const addItem = () => {
+      const currTasks = dayArrData.value.find ((el) => {
+        return el.id === props.currDay.id;
+      });
+      currTasks.tasks.push({
+        name: "Empty task",
+        description: "No description",
+        status: false,
+        creationTime: Date.now()
+      });
+      addDoc(taskCollection, currTasks)
+    };
+
+    // TODO Add new document:
+
+    // async function addNewDocument() {
+    //   const newTask = await addDoc(taskCollection, {
+    //     customer: 'Arthur',
+    //     drink: 'Latte',
+    //     total_cost: (100 + Math.floor(Math.random() * 400)) / 100
+    //   })
+    //   console.log(`Your doc was created at path: ${ newTask.path }`);
+    // } 
+
+    // async function readASingleDocument() {
+    //   const mySnapshot = await getDoc(taskCollection)
+    //   if(mySnapshot.exists()) {
+    //     const docData = mySnapshot.data()
+    //     console.log(`My data is ${ JSON.stringify(docData) }`);
+    //   }
+    // }
+    // addNewDocument()
+    // readASingleDocument()
+
+    // TODO: Once the task is clicked, change the dot status in Calendar.vue
+    const changeDotStatus = (task) => {
+      task.status ? task.status === false : task.status === true;
+
+      task.status
+        ? (store.state.dotStatusTransfer = true)
+        : (store.state.dotStatusTransfer = false);
+    };
+
+    onUnmounted(() => {
+      getTasks()
+
+    })
     return {
-      getClickedTask,
+      popupWindow,
       deleteItem,
       addItem,
       dayArrData,
+      isActiveDot,
+      changeDotStatus,
+      dotStatus,
+      getTasks,
+      tasks,
+      currTasks
+
     };
+
   },
 };
 </script>
@@ -125,6 +222,10 @@ export default {
   font-family: "Open Sans Condensed", sans-serif;
   font-size: 25px;
   font-weight: bold;
+}
+
+.container {
+  transition: 0.5s;
 }
 .task-wrapper {
   margin-top: 5rem;
@@ -208,5 +309,11 @@ export default {
 #add-task-btn:hover {
   transition: 0.5s;
   background: rgb(0, 0, 0);
+}
+
+.done {
+  transition: 0.5s;
+  text-decoration: line-through;
+  color: rgb(69, 167, 69);
 }
 </style>

@@ -15,8 +15,12 @@
             </p>
           </div>
           <div class="dot-wrapper">
-            <div class="dot-status undone" />
-            <div class="dot-status undone" />
+            <div class="dot dotActive" />
+
+            <div 
+              v-if="contatinsTasks" 
+              class="dot"
+            />
           </div>
         </div>
       </div>
@@ -26,13 +30,21 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+import { 
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  setDoc,
+  deleteDoc,
+  updateDoc
+} from 'firebase/firestore'
+
 import { useStore } from "vuex";
-import { ref, emit } from "vue";
+import { ref, emit, onMounted } from "vue";
+import { calendarFormat } from 'moment';
 
 export default {
-  /*=============================================
-  =            Setup            =
-  =============================================*/
   props: {
     dayArr: {
       type: Array,
@@ -41,16 +53,22 @@ export default {
   },
 
   setup(props, { emit }) {
+    // ? Firebase store:
+    const firestore = getFirestore()
+    // ? Vuex store:
+    const store = useStore()
     const moment = require("moment");
+
+    const containsTasks = store.state.dotStatusTransfer
 
     const activeDay = ref(1);
 
-    // ? Get the remaining month days starting from today:
+    // TODO: Get the remaining month days starting from today:
     const daysRemainingThisMonth = moment()
       .endOf("month")
       .diff(moment(), "days");
 
-    // ? Turn the remaining days into an array
+    // TODO: Turn the remaining days into an array
     const switchDay = (idx, day) => {
       activeDay.value = idx + 1;
       emit("updateCurrDay", day);
@@ -60,9 +78,9 @@ export default {
       daysRemainingThisMonth,
       switchDay,
       activeDay,
+      containsTasks
     };
   },
-  /*=====  End of Setup  ======*/
 };
 </script>
 
@@ -120,13 +138,6 @@ export default {
   text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.672);
   background-color: rgb(0, 0, 0);
 }
-/* .default {
-      transition: 0.3s;
-      color: #000;
-      background-color: #FFF;
-
-      box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.207);
-    } */
 
 .card-info {
   display: flex;
@@ -140,15 +151,28 @@ export default {
 
   margin-left: 5px;
 }
-.dot-status {
+
+.dot {
   width: 5px;
   height: 5px;
 
   margin-right: 5px;
 
-  box-shadow: 0px 0px 10px 2px rgba(138, 20, 197, 0.356);
+  box-shadow: 0px 0px 10px 2px rgba(138, 20, 197, 0.227);
 
   border-radius: 50%;
-  background: rgb(138, 20, 197);
+  border: 1px solid rgb(138, 20, 197); 
+}
+/* ! Dot Status: */
+.dotActive {
+  width: 5px;
+  height: 5px;
+
+  margin-right: 5px;
+
+  box-shadow: 0px 0px 10px 2px rgba(138, 20, 197, 0.227);
+
+  border-radius: 50%;
+  background: rgb(138, 20, 197); 
 }
 </style>
