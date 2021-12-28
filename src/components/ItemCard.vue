@@ -9,7 +9,7 @@
       </span>
 
       <div class="task-wrapper">
-        <!--     Task Name Edit     -->
+        <!--     Task Name Edit     --> 
         <input
           v-if="isEditing"
           v-model="$store.state.clickedTask.name"

@@ -63,8 +63,10 @@ import {
   onSnapshot,
   DocumentSnapshot,
   getDocs,
+  deleteField,
   
 } from 'firebase/firestore'
+import { firebaseApp } from '../firebase';
 
 export default {
   components: {
@@ -103,7 +105,7 @@ export default {
     
     // TODO: Make a status for the checked checkbox
     const isActiveDot = ref(props.dotStatus);
-    //  For this is the new keyboard as this is hte new 
+  
     // TODO: Create a pop-up window when the task is clicked:
     const popupWindow = (item) => {
       store.state.clickedTask = item;
@@ -112,9 +114,26 @@ export default {
         : (store.state.cardStatus = true);
     };
     // TODO: Delete task function:
-    const deleteItem = (idx) => {
+    const deleteItem = (idx, taskID) => {
+      const currTasks = dayArrData.value.find ((el) => {
+        return el.id === props.currDay.id;
+      });
       currTasks.tasks.splice(idx, 1);
-      deleteDoc(calendar, currTasks)
+
+      taskCollection
+      .doc(taskID)
+        .get()
+          .then(
+            doc => {
+            if(doc.exists) {
+              doc.ref.delete().then(() => {
+                console.log('Deleted successfully');
+              })
+            }
+            else { console.log('No such document!')}
+          }
+      )
+      
     };
     console.log(currDay.value);
 
@@ -128,12 +147,13 @@ export default {
         }
       })
     } 
-
     listenToADocument()
     
-    const tasks = ref(currTasks)
 
     // TODO: Get tasks:
+    const tasks = ref(currTasks)
+
+    console.log(tasks.value);
     const getTasks = 
       onSnapshot(taskCollection, snapshot => {
         console.log(snapshot.docs);
@@ -145,35 +165,18 @@ export default {
       const currTasks = dayArrData.value.find ((el) => {
         return el.id === props.currDay.id;
       });
-      currTasks.tasks.push({
-        name: "Empty task",
-        description: "No description",
-        status: false,
-        creationTime: Date.now()
-      });
+
+     const taskData = {
+       name: 'Empty task',
+       description: 'No description',
+       status: false,
+       creationTime: Date.now()
+     }
+
+      currTasks.tasks.push({ taskData });
       addDoc(taskCollection, currTasks)
     };
 
-    // TODO Add new document:
-
-    // async function addNewDocument() {
-    //   const newTask = await addDoc(taskCollection, {
-    //     customer: 'Arthur',
-    //     drink: 'Latte',
-    //     total_cost: (100 + Math.floor(Math.random() * 400)) / 100
-    //   })
-    //   console.log(`Your doc was created at path: ${ newTask.path }`);
-    // } 
-
-    // async function readASingleDocument() {
-    //   const mySnapshot = await getDoc(taskCollection)
-    //   if(mySnapshot.exists()) {
-    //     const docData = mySnapshot.data()
-    //     console.log(`My data is ${ JSON.stringify(docData) }`);
-    //   }
-    // }
-    // addNewDocument()
-    // readASingleDocument()
 
     // TODO: Once the task is clicked, change the dot status in Calendar.vue
     const changeDotStatus = (task) => {
@@ -198,7 +201,7 @@ export default {
       dotStatus,
       getTasks,
       tasks,
-      currTasks
+      currTasks,
 
     };
 
