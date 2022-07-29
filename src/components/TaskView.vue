@@ -10,6 +10,7 @@
       <div class="task-list" v-for="(task, idx) in currDay.tasks" :key="idx">
         <div class="list-item">
           <div class="container" :class="{ done: task.status }">
+          <!-- ? Task Checkbox -->
             <input
               @change="changeDotStatus(task)"
               v-model="task.status"
@@ -19,11 +20,12 @@
             {{ task.name }}
           </div>
 
+          <!-- ? Edit Task Icon -->
           <div class="item-actions">
             <button class="edit-item btn" @click="popupWindow(task)">
               <img class="icon" src="./Images/editing.png" />
             </button>
-
+          <!-- ? Delete Task Icon -->
             <button class="delete-item btn" @click="deleteItem(idx)">
               <img class="icon" src="./Images/delete.png" />
             </button>
@@ -31,8 +33,6 @@
         </div>
       </div>
     </div>
-
-    {{ storeDotStatus }}
 
     <div class="item-card">
       <ItemCard />
@@ -67,6 +67,7 @@ import {
   
 } from 'firebase/firestore'
 import { firebaseApp } from '../firebase';
+import { signInAnonymously } from '@firebase/auth';
 
 export default {
   components: {
@@ -100,7 +101,6 @@ export default {
     });
 
     const currDay = ref(props.currDay)
-
     const dotStatus = ref(props.displayDotStatus);
     
     // TODO: Make a status for the checked checkbox
@@ -149,32 +149,32 @@ export default {
     } 
     listenToADocument()
     
-
     // TODO: Get tasks:
     const tasks = ref(currTasks)
 
-    console.log(tasks.value);
     const getTasks = 
       onSnapshot(taskCollection, snapshot => {
         console.log(snapshot.docs);
         tasks.value = snapshot.docs
       })
+      console.log(dayArrData.value);
 
     // TODO: Add item function:
     const addItem = () => {
-      const currTasks = dayArrData.value.find ((el) => {
+      // ? select the clicked day:
+      const currTasks = dayArrData.value.find((el) => {
+        console.log(el);
         return el.id === props.currDay.id;
       });
-
-     const taskData = {
-       name: 'Empty task',
-       description: 'No description',
-       status: false,
-       creationTime: Date.now()
-     }
-
+      // ? default data for the task
+      const taskData = {
+        name: 'Empty task',
+        description: 'No description',
+        status: false,
+        creationTime: Date.now()
+      }
+      // push the taskData object to the selected day above:
       currTasks.tasks.push({ taskData });
-      addDoc(taskCollection, currTasks)
     };
 
 
@@ -202,7 +202,6 @@ export default {
       getTasks,
       tasks,
       currTasks,
-
     };
 
   },

@@ -6,7 +6,7 @@
 import { initializeApp } from "@firebase/app";
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
 // ? Firestore imports:
-import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 // ? Vue imports:
 import { ref, onMounted, onUnmounted, computed } from "vue";
 // ────────────────────────────────────────────────────────────────────────────────
@@ -24,7 +24,6 @@ export const firebaseApp = initializeApp({
   measurementId: "G-JXWB1METB0",
 })
 // ───────────────────────────────────────────────────
-
 export const firestore = getFirestore()
 
 //

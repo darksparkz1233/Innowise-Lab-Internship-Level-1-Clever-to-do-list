@@ -44,8 +44,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Auth from "../Auth.vue";
 // ? Firebase:
-import { getAuth } from "@firebase/auth";
-import { signOut } from "@firebase/auth";
+import { getAuth, signOut } from "@firebase/auth";
 import { useAuthState } from "../firebase";
 // ? Router:
 import { useRouter } from "vue-router";
@@ -109,7 +108,7 @@ export default {
       currDay.value = dayArr.value[0];
     };
 
-    const updateCurrDay = (value) => {
+    const updateCurrDay = (value) => {  
       currDay.value = value;
     };
 
